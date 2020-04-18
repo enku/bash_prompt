@@ -1,0 +1,4 @@
+coverage.out
+go_modules/*
+gotest.out
+xunit.xml
