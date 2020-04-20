@@ -324,6 +324,7 @@ __create_prompt() (
         case ${myos} in
             Linux|NetBSD)
                 myversion=$(uname -r)
+                myversion=${myversion%_STABLE}
                 local loadavg
                 read -ra loadavg <<< "$(< /proc/loadavg)"
                 load="${loadavg[0]} ${loadavg[1]} ${loadavg[2]}"
