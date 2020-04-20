@@ -328,23 +328,29 @@ __create_prompt() (
 
     # slower than the executable, but gets the job done
     builtin_bash_prompt_vars() {
-        local myos myversion load tty users
+        local myos myversion version loadavg load tty users
 
-        myos=$(uname -s)
-
-        case ${myos} in
-            Linux|NetBSD)
-                myversion=$(uname -r)
-                myversion=${myversion%_STABLE}
-                local loadavg
+        case ${OSTYPE} in
+            linux*)
+                myos=Linux
+                read -ra version < /proc/version
+                myversion=${version[2]}
                 read -ra loadavg <<< "$(< /proc/loadavg)"
                 load="${loadavg[0]} ${loadavg[1]} ${loadavg[2]}"
                 ;;
-            Darwin)
-                myos="MacOS"
+            netbsd)
+                myos=NetBSD
+                read -ra version < /proc/version
+                myversion=${version[2]}
+                myversion=${myversion%_STABLE}
+                read -ra loadavg < /proc/loadavg
+                load="${loadavg[0]} ${loadavg[1]} ${loadavg[2]}"
+                ;;
+            darwin*)
+                myos=MacOS
                 myversion="$(defaults read loginwindow SystemVersionStampAsString)"
-                load="$(sysctl -n vm.loadavg)"
-                load="${load:1:-1}"
+                loadavg="$(sysctl -n vm.loadavg)"
+                load="${loadavg:1:-1}"
                 ;;
             *)
             myversion=$(uname -v)
