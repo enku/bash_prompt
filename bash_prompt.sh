@@ -173,7 +173,7 @@ __create_prompt() (
         local uptime hist histtime histcmd
 
         uptime=$SECONDS
-        read -ra hist <<< "$(history 1)"
+        read -ra hist <<< "$(HISTTIMEFORMAT="%s " history 1)"
         histtime="${hist[1]}"
         histcmd="${hist[2]}"
 
@@ -184,8 +184,7 @@ __create_prompt() (
         esac
 
         local histtime now elapsed
-        histtime=$(date -d "${histtime/\// }" +"%s")
-        now=$(date +"%s")
+        now=$EPOCHSECONDS
         elapsed=$((now - histtime))
 
         # If the shell's uptime is less than elapsed, then this command was not
@@ -317,7 +316,7 @@ __create_prompt() (
 
     # slower than the executable, but gets the job done
     builtin_bash_prompt_vars() {
-        local myos myversion load date tty users
+        local myos myversion load tty users
 
         myos=$(uname -s)
 
@@ -341,12 +340,11 @@ __create_prompt() (
             ;;
         esac
 
-        date=$(date +"%a %b %d")
         tty=$(tty)
         tty=${tty#/dev/}
         read -r users <<< "$(w -h |wc -l)"
 
-        printf 'myos="%s"\ndate="%s"\nload="%s"\nmyversion="%s"\ntty="%s"\nusers="%s"\n' "${myos}" "${date}" "${load}" "${myversion}" "${tty}" "${users}"
+        printf 'myos="%s"\nload="%s"\nmyversion="%s"\ntty="%s"\nusers="%s"\n' "${myos}" "${load}" "${myversion}" "${tty}" "${users}"
     }
 
     PS1='\$ '
@@ -355,12 +353,12 @@ __create_prompt() (
         source ~/.location
     fi
 
-    local myos date myversion users tty load
+    local myos today myversion users tty load
     eval "$(bash_prompt_vars 2>/dev/null || builtin_bash_prompt_vars)"
 
     myos="$(_ level1)${myos}"
     tty="$(get_tty "$tty")"
-    #set -- ${myversion//-/ }
+    today=$(printf "%(%a %b %d)T" "$EPOCHSECONDS")
     myversion=${myversion//-/ }
     local parts
     read -ra parts <<< "${myversion}"
@@ -390,7 +388,7 @@ __create_prompt() (
     line=(
         [0]="$(_ fg "" under)$(three_cent)$(off)\n"
         [1]="$(_)$(three_cent " $myos $myversion" "$users" "$load ")$(off)\n"
-        [2]="$(_ fg bg under)$(three_cent " $date" "$userhost" "$tty ")$(off)\n"
+        [2]="$(_ fg bg under)$(three_cent " $today" "$userhost" "$tty ")$(off)\n"
         [3]="$(off)$(_ parens)${parens0}$(off)$PS1\w$(_ parens)${parens1}$(off)  "
     )
 

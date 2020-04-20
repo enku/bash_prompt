@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"time"
 
 	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/load"
@@ -53,8 +52,6 @@ func main() {
 	}
 	terminal = strings.TrimPrefix(terminal, "/")
 
-	now := time.Now()
-
 	var os string
 	var version string
 	if info.OS == "darwin" {
@@ -67,7 +64,6 @@ func main() {
 
 	os = strings.Title(os)
 
-	fmt.Printf("date=\"%s\"\n", now.Format("Mon Jan 2"))
 	fmt.Printf("load=\"%.2f %.2f %.2f\"\n", loadavg.Load1, loadavg.Load5, loadavg.Load15)
 	fmt.Printf("myos=\"%s\"\n", os)
 	fmt.Printf("myversion=\"%s\"\n", version)
