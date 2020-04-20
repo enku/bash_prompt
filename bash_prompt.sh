@@ -286,7 +286,7 @@ __create_prompt() (
 
         elapsed=$(humanize_time "$seconds")
 
-        echo "<${command}: ${elapsed}> $tty"
+        echo "↑ ${command}: ${elapsed} $tty"
     }
 
     # get the color with the given name or return the default
