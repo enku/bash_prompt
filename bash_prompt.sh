@@ -5,12 +5,12 @@ if [[ "${BASH##*/}" != "bash" ]]; then
     return
 fi
 
-HISTTIMEFORMAT='%F/%T '
 __create_prompt() (
     # shellcheck disable=SC2034
     local exit_status=$?
 
     shopt -s extglob
+    HISTTIMEFORMAT='%s '
 
     # These are the defaults
     local -rA default_colors=(
@@ -173,7 +173,7 @@ __create_prompt() (
         local uptime hist histtime histcmd
 
         uptime=$SECONDS
-        read -ra hist <<< "$(HISTTIMEFORMAT="%s " history 1)"
+        read -ra hist <<< "$(history 1)"
         histtime="${hist[1]}"
         histcmd="${hist[2]}"
 
@@ -184,7 +184,13 @@ __create_prompt() (
         esac
 
         local histtime now elapsed
-        now=$EPOCHSECONDS
+
+        if [[ -v EPOCHSECONDS ]]; then
+            now=$EPOCHSECONDS
+        else
+            now=$(date +"%s")
+        fi
+
         elapsed=$((now - histtime))
 
         # If the shell's uptime is less than elapsed, then this command was not
