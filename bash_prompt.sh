@@ -375,7 +375,7 @@ __create_prompt() (
     users="$(_ parens)${parens0} $(_ users)${users} users $(_ parens)${parens1}$(_)"
 
     local vcs
-    if [[ -z "${BASH_PROMPT_SKIP_VCS_CHECK+x}" ]]; then
+    if [[ ! -v BASH_PROMPT_SKIP_VCS_CHECK ]]; then
         if vcs="$(git_stat || hg_stat)"; [[ -n "${vcs}" ]]; then
             local vcs repo branch revision stat
             read -r vcs repo branch revision stat <<< "$vcs"
