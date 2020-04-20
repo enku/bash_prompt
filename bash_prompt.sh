@@ -290,10 +290,16 @@ __create_prompt() (
 
     # get the color with the given name or return the default
     get_color() {
-        local default=${default_colors[$1]}
-        local mycolor=${BASH_PROMPT_COLORS[$1]-${default}}
+        local name color
 
-        echo "${mycolor}"
+        name=$1
+        color=${default_colors[$name]}
+
+        if [[ -v BASH_PROMPT_COLORS[@] ]]; then
+            color=${BASH_PROMPT_COLORS[$name]-$color}
+        fi
+
+        echo "${color}"
     }
 
     _() {
