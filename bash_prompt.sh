@@ -16,13 +16,14 @@ __create_prompt() (
     local -rA default_colors=(
         [fg]="#fdfdfd"
         [bg]="#212121"
-        [branch]="#90ff7f"
         [level1]="#a97fff"
         [level2]="#eeff7f"
         [level3]="#7fe5ff"
         [level4]="#ff7fbd"
         [level5]="#8cff7f"
+        [vcs]="#FF0"
         [repo]="#0FF"
+        [branch]="#90ff7f"
         [added]="#7FFF7F"
         [deleted]="#DD4B39"
         [modified]="#40A1FF"
@@ -30,7 +31,6 @@ __create_prompt() (
         [untracked]="#FF40FF"
         [parens]="#ff7f81"
         [users]="#90ff7f"
-        [vcs]="#FF0"
     )
 
     local parens0=${BASH_PROMPT_PARENS_OPEN-'('}
