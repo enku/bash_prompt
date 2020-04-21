@@ -5,6 +5,7 @@ go 1.14
 require (
 	bitbucket.org/gohg/gohg v0.0.0-20140720204206-32d5a063a72b
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
+	github.com/go-git/go-git/v5 v5.0.0
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/mikoim/go-loadavg v0.0.0-20150917074714-35ece5f6d547

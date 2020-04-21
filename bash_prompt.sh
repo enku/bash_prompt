@@ -361,7 +361,11 @@ __create_prompt() (
         tty=${tty#/dev/}
         read -r users < <(w -h |wc -l)
 
-        printf 'myos="%s"\nload="%s"\nmyversion="%s"\ntty="%s"\nusers="%s"\n' "${myos}" "${load}" "${myversion}" "${tty}" "${users}"
+        if [[ ! -v BASH_PROMPT_SKIP_VCS_CHECK ]]; then
+            vcs="$(git_stat || hg_stat)"
+        fi
+
+        printf 'myos="%s"\nload="%s"\nmyversion="%s"\ntty="%s"\nusers="%s"\nvcs="%s"\n' "${myos}" "${load}" "${myversion}" "${tty}" "${users}" "${vcs}"
     }
 
     PS1='\$ '
@@ -370,8 +374,12 @@ __create_prompt() (
         source ~/.location
     fi
 
-    local myos today myversion users tty load
-    eval "$(bash_prompt_vars 2>/dev/null || builtin_bash_prompt_vars)"
+    local myos today myversion users tty load vcs
+    if [[ -v BASH_PROMPT_SKIP_VCS_CHECK ]]; then
+        eval "$(BASH_PROMPT_SKIP_VCS_CHECK="$BASH_PROMPT_SKIP_VCS_CHECK" bash_prompt_vars 2>/dev/null || builtin_bash_prompt_vars)"
+    else
+        eval "$(bash_prompt_vars 2>/dev/null || builtin_bash_prompt_vars)"
+    fi
 
     myos="$(_ level1)${myos}"
     tty="$(get_tty "$tty")"
@@ -385,18 +393,15 @@ __create_prompt() (
 
     users="$(_ parens)${parens0} $(_ users)${users} users $(_ parens)${parens1}$(_)"
 
-    local vcs
-    if [[ ! -v BASH_PROMPT_SKIP_VCS_CHECK ]]; then
-        if vcs="$(git_stat || hg_stat)"; [[ -n "${vcs}" ]]; then
-            local vcs repo branch revision stat
-            read -r vcs repo branch revision stat <<< "$vcs"
-            users="$(_ parens)${parens0}$(_ vcs "" bold)${vcs}$(off)$(_)∙$(_ repo)${repo}$(_)∙$(_ branch)${branch}$(_)∙$(_ vcs)${revision}$(_ parens)${parens1}$(_)"
-            local modified added deleted untracked
-            stat=${stat//0?/٠٠}
-            read -r modified added deleted untracked <<< "${stat}"
+    if [[ -n "${vcs}" ]]; then
+        local repo branch revision stat
+        read -r vcs repo branch revision stat <<< "$vcs"
+        users="$(_ parens)${parens0}$(_ vcs "" bold)${vcs}$(off)$(_)∙$(_ repo)${repo}$(_)∙$(_ branch)${branch}$(_)∙$(_ vcs)${revision}$(_ parens)${parens1}$(_)"
+        local modified added deleted untracked
+        stat=${stat//0?/٠٠}
+        read -r modified added deleted untracked <<< "${stat}"
 
-            load="$(_ modified)${modified} $(_ added)${added} $(_ deleted)${deleted} $(_ untracked)${untracked}$(_)"
-        fi
+        load="$(_ modified)${modified} $(_ added)${added} $(_ deleted)${deleted} $(_ untracked)${untracked}$(_)"
     fi
 
     local userhost

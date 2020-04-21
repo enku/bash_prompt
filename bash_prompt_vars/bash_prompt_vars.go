@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	hg "bitbucket.org/gohg/gohg"
+	git "github.com/go-git/go-git/v5"
 	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/load"
 	"github.com/shirou/gopsutil/process"
@@ -25,6 +26,66 @@ func printError(err error) error {
 	}
 
 	return err
+}
+
+func gitStatus() string {
+	var root string
+	var added, modified, deleted, untracked int
+
+	repo, err := git.PlainOpen(".")
+
+	if err != nil {
+		return ""
+	}
+
+	remotes, err := repo.Remotes()
+
+	if printError(err) != nil {
+		return ""
+	}
+
+	if len(remotes) > 0 {
+		remote := remotes[0].Config()
+		url := remote.URLs[0]
+		root = path.Base(url)
+	} else {
+		dir, _ := os.Getwd()
+		root = path.Base(dir)
+	}
+
+	root = strings.TrimSuffix(root, ".git")
+
+	head, err := repo.Head()
+
+	if printError(err) != nil {
+		return ""
+	}
+
+	branch := string(head.Name())
+	branch = strings.TrimLeft(branch, "refs/heads")
+	revision := head.Hash().String()[0:7]
+
+	worktree, err := repo.Worktree()
+
+	if err == nil {
+		status, err := worktree.Status()
+		if err == nil {
+			for _, stat := range status {
+				switch {
+				case stat.Staging == git.Added || stat.Worktree == git.Added:
+					added++
+				case stat.Staging == git.Modified || stat.Worktree == git.Modified:
+					modified++
+				case stat.Staging == git.Deleted || stat.Worktree == git.Deleted:
+					deleted++
+				case stat.Worktree == git.Untracked:
+					untracked++
+				}
+			}
+		}
+	}
+
+	return fmt.Sprintf("git %s %s %s %dm %da %dd %du", root, branch, revision, modified, added, deleted, untracked)
 }
 
 func hgStatus() string {
@@ -97,6 +158,8 @@ func getTty() string {
 }
 
 func main() {
+	var vcs string
+
 	info, err := host.Info()
 	checkError(err, "Could not obtain platform information")
 
@@ -119,21 +182,29 @@ func main() {
 	}
 	terminal = strings.TrimPrefix(terminal, "/")
 
-	var os string
+	var myos string
 	var version string
 	if info.OS == "darwin" {
-		os = "MacOS"
+		myos = "MacOS"
 		version = info.PlatformVersion
 	} else {
-		os = info.OS
+		myos = info.OS
 		version = info.KernelVersion
 	}
 
-	os = strings.Title(os)
-	vcs := hgStatus()
+	myos = strings.Title(myos)
+	vcs = gitStatus()
+
+	if _, defined := os.LookupEnv("BASH_PROMPT_SKIP_VCS_CHECK"); !defined {
+		vcs = gitStatus()
+
+		if vcs == "" {
+			vcs = hgStatus()
+		}
+	}
 
 	fmt.Printf("load=\"%.2f %.2f %.2f\"\n", loadavg.Load1, loadavg.Load5, loadavg.Load15)
-	fmt.Printf("myos=\"%s\"\n", os)
+	fmt.Printf("myos=\"%s\"\n", myos)
 	fmt.Printf("myversion=\"%s\"\n", version)
 	fmt.Printf("tty=\"%s\"\n", terminal)
 	fmt.Printf("users=\"%d\"\n", users)
