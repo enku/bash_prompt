@@ -45,8 +45,7 @@ __create_prompt() (
         REVERSE=${ESC}"7m\]"
 
     # Give the length of the given string with ansi control codes removed
-    len()
-    {
+    len() {
         local stripped
 
         stripped=${1//'\[\033['+([0-9;])'m\]'}
@@ -88,7 +87,7 @@ __create_prompt() (
         root=${root##*/}
 
         local revision branch
-        read -r revision branch <<< "$(hg id -i -b)"
+        read -r revision branch < <(hg id -i -b)
         revision=${revision:0:7}
 
         while read -r stat _; do
@@ -115,7 +114,7 @@ __create_prompt() (
         local branch remote revision root stat _
         local -i modified=0 added=0 deleted=0 untracked=0
 
-        read -ra remote <<< "$(git remote -v show 2>/dev/null)"
+        read -ra remote < <(git remote -v show 2>/dev/null)
         if (( ${#remote[@]} == 0 )); then
             return 1
         fi
@@ -173,7 +172,7 @@ __create_prompt() (
         local uptime hist histtime histcmd
 
         uptime=$SECONDS
-        read -ra hist <<< "$(history 1)"
+        read -ra hist < <(history 1)
         histtime="${hist[1]}"
         histcmd="${hist[2]}"
 
@@ -215,12 +214,12 @@ __create_prompt() (
         local s=""
         local parts
         if [[ -n "${fg}" ]]; then
-            read -ra parts <<< "$(hextoint "$fg")"
+            read -ra parts < <(hextoint "$fg")
             s="${s}${ESC}38;2;${parts[0]};${parts[1]};${parts[2]}m\]"
         fi
 
         if [[ -n "${bg}" ]]; then
-            read -ra parts <<< "$(hextoint "$bg")"
+            read -ra parts < <(hextoint "$bg")
             s="${s}${ESC}48;2;${parts[0]};${parts[1]};${parts[2]}m\]"
         fi
 
@@ -282,7 +281,7 @@ __create_prompt() (
 
         tty=$1
         [[ "${WINDOW}" ]] && tty="${tty} «${WINDOW}»"
-        read -r seconds command <<< "$(get_previous_command_time)"
+        read -r seconds command < <(get_previous_command_time)
 
         if [[ -z "$command" ]]; then
             echo "$tty"
@@ -335,7 +334,7 @@ __create_prompt() (
                 myos=Linux
                 read -ra version < /proc/version
                 myversion=${version[2]}
-                read -ra loadavg <<< "$(< /proc/loadavg)"
+                read -ra loadavg < /proc/loadavg
                 load="${loadavg[0]} ${loadavg[1]} ${loadavg[2]}"
                 ;;
             netbsd)
@@ -349,8 +348,8 @@ __create_prompt() (
             darwin*)
                 myos=MacOS
                 myversion="$(defaults read loginwindow SystemVersionStampAsString)"
-                loadavg="$(sysctl -n vm.loadavg)"
-                load="${loadavg:1:-1}"
+                load="$(sysctl -n vm.loadavg)"
+                load="${load:1:-1}"
                 ;;
             *)
             myversion=$(uname -v)
@@ -360,7 +359,7 @@ __create_prompt() (
 
         tty=$(tty)
         tty=${tty#/dev/}
-        read -r users <<< "$(w -h |wc -l)"
+        read -r users < <(w -h |wc -l)
 
         printf 'myos="%s"\nload="%s"\nmyversion="%s"\ntty="%s"\nusers="%s"\n' "${myos}" "${load}" "${myversion}" "${tty}" "${users}"
     }
