@@ -87,8 +87,7 @@ __create_prompt() (
         root=${root##*/}
 
         local revision branch
-        read -r revision branch < <(hg id -i -b)
-        revision=${revision:0:7}
+        read -r revision branch < <(hg --debug id -i -b)
 
         while read -r stat _; do
             case ${stat} in
@@ -124,7 +123,7 @@ __create_prompt() (
         root=${root%.git}
 
         branch=$(git rev-parse --abbrev-ref HEAD)
-        revision=$(git rev-parse --short HEAD)
+        revision=$(git rev-parse HEAD)
 
         while read -r stat _; do
             case ${stat} in
@@ -396,7 +395,7 @@ __create_prompt() (
     if [[ -n "${vcs}" ]]; then
         local repo branch revision stat
         read -r vcs repo branch revision stat <<< "$vcs"
-        users="$(_ parens)${parens0}$(_ vcs "" bold)${vcs}$(off)$(_)∙$(_ repo)${repo}$(_)∙$(_ branch)${branch}$(_)∙$(_ vcs)${revision}$(_ parens)${parens1}$(_)"
+        users="$(_ parens)${parens0}$(_ vcs "" bold)${vcs}$(off)$(_)∙$(_ repo)${repo}$(_)∙$(_ branch)${branch}$(_)∙$(_ vcs)${revision:0:7}$(_ parens)${parens1}$(_)"
         local modified added deleted untracked
         stat=${stat//0?/٠٠}
         read -r modified added deleted untracked <<< "${stat}"

@@ -63,7 +63,7 @@ func gitStatus() string {
 
 	branch := string(head.Name())
 	branch = strings.TrimLeft(branch, "refs/heads")
-	revision := head.Hash().String()[0:7]
+	revision := head.Hash().String()
 
 	worktree, err := repo.Worktree()
 
@@ -101,14 +101,14 @@ func hgStatus() string {
 
 	root := path.Base(hgcl.RepoRoot())
 
-	id, err := hgcl.Identify([]hg.HgOption{}, []string{"-i", "-b"})
+	id, err := hgcl.Identify([]hg.HgOption{}, []string{"--debug", "-i", "-b"})
 
 	if printError(err) != nil {
 		return ""
 	}
 
 	split := strings.Split(strings.TrimRight(string(id), "\n"), " ")
-	revision := split[0][0:7]
+	revision := split[0]
 	branch := split[1]
 
 	status, err := hgcl.Status([]hg.HgOption{}, []string{})
