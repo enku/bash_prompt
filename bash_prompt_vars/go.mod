@@ -11,5 +11,5 @@ require (
 	github.com/mikoim/go-loadavg v0.0.0-20150917074714-35ece5f6d547
 	github.com/shirou/gopsutil v2.20.3+incompatible
 	golang.org/x/sys v0.0.0-20200413165638-669c56c373c4 // indirect
-	golang.org/x/tools v0.0.0-20200417140056-c07e33ef3290 // indirect
+	golang.org/x/tools v0.0.0-20200421185700-66008de356c7 // indirect
 )
