@@ -130,8 +130,12 @@ __create_prompt() (
                 M)
                     (( modified++ ))
                     ;;
-                D|R)
+                D)
                     (( deleted++ ))
+                    ;;
+                R)
+                    (( deleted++ ))
+                    (( added++ ))
                     ;;
                 A)
                     (( added++ ))
