@@ -315,7 +315,7 @@ __create_prompt() (
         local newstats=""
         local stat
 
-        for stat in "$@"; do
+        for stat in $@; do
             if [[ ${stat:0:1} == "0" ]]; then
                 stat="٠٠"
             fi
