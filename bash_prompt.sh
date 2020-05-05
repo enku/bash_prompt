@@ -127,7 +127,7 @@ __create_prompt() (
 
         while read -r stat _; do
             case ${stat} in
-                M)
+                M|MM)
                     (( modified++ ))
                     ;;
                 D)
