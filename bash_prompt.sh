@@ -42,7 +42,9 @@ __create_prompt() (
         BOLD=${ESC}"1m\]" \
         UNDERSCORE=${ESC}"4m\]" \
         BLINK=${ESC}"5m\]" \
-        REVERSE=${ESC}"7m\]"
+        REVERSE=${ESC}"7m\]" \
+        ITALIC=${ESC}"3m\]" \
+        STRIKETHROUGH=${ESC}"9m\]"
 
     # Give the length of the given string with ansi control codes removed
     len() {
@@ -406,7 +408,7 @@ __create_prompt() (
     myversion=${myversion//-/ }
     local parts
     read -ra parts <<< "${myversion}"
-    myversion="$(_ level2)${parts[0]/%.0/}$(_) $(_ level3)${parts[1]}$(_)${parts[2]}"
+    myversion="$(_ level2)${parts[0]/%.0/}$(_) $(_ level3)${ITALIC}${parts[1]}$(_)${parts[2]}"
     read -ra parts <<< "$load"
     load="$(_ level3)${parts[0]}$(_) $(_ level4)${parts[1]}$(_) $(_ level5)${parts[2]}$(_)"
 
@@ -415,7 +417,7 @@ __create_prompt() (
     if [[ -n "${vcs}" ]]; then
         local repo branch revision stat
         read -r vcs repo branch revision stat <<< "$vcs"
-        users="$(_ parens)${parens0}$(_ vcs "" bold)${vcs}$(off)$(_)∙$(_ repo)${repo}$(_)∙$(_ branch)${branch}$(_)∙$(_ vcs)${revision:0:7}$(_ parens)${parens1}$(_)"
+        users="$(_ parens)${parens0}$(_ vcs "" bold)${vcs}$(off)$(_)∙$(_ repo)${repo}$(_)∙$(_ branch)${branch}$(_)∙$(_ vcs)${ITALIC}${revision:0:7}$(off)$(_)$(_ parens)${parens1}$(_)"
         local modified added deleted untracked
         stat="$(fancy_stats "$stat")"
         read -r modified added deleted untracked <<< "${stat}"
