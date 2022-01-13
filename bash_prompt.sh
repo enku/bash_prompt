@@ -112,20 +112,26 @@ __create_prompt() (
     }
 
     git_stat() {
-        local branch remote revision root stat _
+        local branch index=1 remote revision root stat _
         local -i modified=0 added=0 deleted=0 untracked=0
 
         read -ra remote < <(git remote -v show 2>/dev/null)
+
+        if (( ${#remote[@]} == 0 )); then
+            index=0
+            read -ra remote < <(git rev-parse --show-toplevel 2> /dev/null)
+        fi
+
         if (( ${#remote[@]} == 0 )); then
             return 1
         fi
 
-        root=${remote[1]}
+        root=${remote[${index}]}
         root=${root##*/}
         root=${root%.git}
 
-        branch=$(git rev-parse --abbrev-ref HEAD)
-        revision=$(git rev-parse HEAD)
+        branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
+        revision=$(git rev-parse --short HEAD 2> /dev/null)
 
         while read -r stat _; do
             case ${stat} in
