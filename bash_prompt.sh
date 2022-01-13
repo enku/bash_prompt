@@ -323,7 +323,7 @@ __create_prompt() (
         local newstats=""
         local stat
 
-        for stat in $@; do
+        for stat in "$@"; do
             if [[ ${stat:0:1} == "0" ]]; then
                 stat="٠٠"
             fi
@@ -425,7 +425,7 @@ __create_prompt() (
         read -r vcs repo branch revision stat <<< "$vcs"
         users="$(_ parens)${parens0}$(_ vcs "" bold)${vcs}$(off)$(_)∙$(_ repo)${repo}$(_)∙$(_ branch)${branch}$(_)∙$(_ vcs)${ITALIC}${revision:0:7}$(off)$(_)$(_ parens)${parens1}$(_)"
         local modified added deleted untracked
-        stat="$(fancy_stats "$stat")"
+        stat="$(fancy_stats ${stat})"
         read -r modified added deleted untracked <<< "${stat}"
 
         load="$(_ modified)${modified} $(_ added)${added} $(_ deleted)${deleted} $(_ untracked)${untracked}$(_)"
