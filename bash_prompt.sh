@@ -129,6 +129,7 @@ __create_prompt() (
         root=${remote[${index}]}
         root=${root##*/}
         root=${root%.git}
+        root=${root##git:}
 
         branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
         revision=$(git rev-parse --short HEAD 2> /dev/null)
