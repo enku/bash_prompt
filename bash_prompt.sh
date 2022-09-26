@@ -312,11 +312,7 @@ __create_prompt() (
         name=$1
         color=${default_colors[$name]}
 
-        if [[ -v BASH_PROMPT_COLORS[@] ]]; then
-            color=${BASH_PROMPT_COLORS[$name]-$color}
-        fi
-
-        echo "${color}"
+        echo "${BASH_PROMPT_COLORS[$name]-$color}"
     }
 
     fancy_stats() {
