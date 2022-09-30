@@ -349,7 +349,6 @@ __create_prompt() (
         rgb "${fgcolor}" "${bgcolor}" "$*"
     }
 
-    # slower than the executable, but gets the job done
     builtin_bash_prompt_vars() {
         local myos myversion version loadavg load tty users
 
