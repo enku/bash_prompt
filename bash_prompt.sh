@@ -38,7 +38,6 @@ __create_prompt() (
 
     # Set some constants
     local -r ESC='\[\033['
-    # shellcheck disable=SC2034
     local -r RESET=${ESC}"0m\]" \
         BOLD=${ESC}"1m\]" \
         UNDERSCORE=${ESC}"4m\]" \
@@ -321,9 +320,8 @@ __create_prompt() (
         local newstats=""
         local stat
 
-        for stat do
-            if [[ ${stat:0:1} == "0" ]]
-            then
+        for stat in "$@"; do
+            if [[ ${stat:0:1} == "0" ]]; then
                 stat="٠٠"
             fi
             newstats="${newstats}${sep}${stat}"
@@ -419,12 +417,11 @@ __create_prompt() (
     users="$(_ parens)${parens0} $(_ users)${users} users $(_ parens)${parens1}$(_)"
 
     if [[ -n "${vcs}" ]]; then
-        local repo branch revision
-        local -A stat
+        local repo branch revision stat
         read -r vcs repo branch revision stat <<< "$vcs"
         users="$(_ parens)${parens0}$(_ vcs "" bold)${vcs}$(off)$(_)∙$(_ repo)${repo}$(_)∙$(_ branch)${branch}$(_)∙$(_ vcs)${ITALIC}${revision:0:7}$(off)$(_)$(_ parens)${parens1}$(_)"
         local modified added deleted untracked
-        stat="$(fancy_stats "${stat}")"
+        stat="$(fancy_stats ${stat})"
         read -r modified added deleted untracked <<< "${stat}"
 
         load="$(_ modified)${modified} $(_ added)${added} $(_ deleted)${deleted} $(_ untracked)${untracked}$(_)"
