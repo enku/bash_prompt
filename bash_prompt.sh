@@ -77,40 +77,6 @@ __create_prompt() (
         echo $((16#${red})) $((16#${green})) $((16#${blue}))
     }
 
-    hg_stat() {
-        local stat _ root
-        local -i modified=0 added=0 deleted=0 untracked=0
-
-        root=$(hg root 2>/dev/null)
-        if [[ -z "$root" ]]; then
-            return 1
-        fi
-
-        root=${root##*/}
-
-        local revision branch
-        read -r revision branch < <(hg --debug id -i -b)
-
-        while read -r stat _; do
-            case ${stat} in
-                M)
-                    (( modified++ ))
-                    ;;
-                D|R)
-                    (( deleted++ ))
-                    ;;
-                A)
-                    (( added++ ))
-                    ;;
-                ?)
-                    (( untracked++ ))
-            esac
-        done < <(hg status 2>/dev/null)
-
-        stat="${modified}m ${added}a ${deleted}d ${untracked}u"
-        echo "hg ${root} ${branch} ${revision} ${stat}"
-    }
-
     git_stat() {
         local branch index=1 remote revision root stat _
         local -i modified=0 added=0 deleted=0 untracked=0
@@ -385,7 +351,7 @@ __create_prompt() (
         read -r users < <(w -h |wc -l)
 
         if [[ ! -v BASH_PROMPT_SKIP_VCS_CHECK ]]; then
-            vcs="$(git_stat || hg_stat)"
+            vcs="$(git_stat)"
         fi
 
         printf 'myos="%s"\nload="%s"\nmyversion="%s"\ntty="%s"\nusers="%s"\nvcs="%s"\n' "${myos}" "${load}" "${myversion}" "${tty}" "${users}" "${vcs}"
