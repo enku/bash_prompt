@@ -317,6 +317,7 @@ __create_prompt() {
 
     builtin_bash_prompt_vars() {
         local myos myversion version loadavg load tty users
+        local repo branch revision stat
 
         case ${OSTYPE} in
             linux*)
@@ -383,7 +384,6 @@ __create_prompt() {
     users="$(_ parens)${parens0} $(_ users)${users} users $(_ parens)${parens1}$(_)"
 
     if [[ -n "${vcs}" ]]; then
-        local repo branch revision stat
         read -r vcs repo branch revision stat <<< "$vcs"
         users="$(_ parens)${parens0}$(_ vcs "" bold)${vcs}$(off)$(_)∙$(_ repo)${repo}$(_)∙$(_ branch)${branch}$(_)∙$(_ vcs)${ITALIC}${revision:0:7}$(off)$(_)$(_ parens)${parens1}$(_)"
         local modified added deleted untracked
