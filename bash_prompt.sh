@@ -317,7 +317,7 @@ __create_prompt() {
 
     builtin_bash_prompt_vars() {
         local myos myversion version loadavg load tty users
-        local repo branch revision stat
+        local repo brnch revision stat
 
         case ${OSTYPE} in
             linux*)
@@ -384,13 +384,13 @@ __create_prompt() {
     users="$(_ parens)${parens0} $(_ users)${users} users $(_ parens)${parens1}$(_)"
 
     if [[ -n "${vcs}" ]]; then
-        read -r vcs repo branch revision stat <<< "$vcs"
-        users="$(_ parens)${parens0}$(_ vcs "" bold)${vcs}$(off)$(_)∙$(_ repo)${repo}$(_)∙$(_ branch)${branch}$(_)∙$(_ vcs)${ITALIC}${revision:0:7}$(off)$(_)$(_ parens)${parens1}$(_)"
-        local modified added deleted untracked
+        read -r vcs repo brnch revision stat <<< "$vcs"
+        users="$(_ parens)${parens0}$(_ vcs "" bold)${vcs}$(off)$(_)∙$(_ repo)${repo}$(_)∙$(_ branch)${brnch}$(_)∙$(_ vcs)${ITALIC}${revision:0:7}$(off)$(_)$(_ parens)${parens1}$(_)"
+        local m a d u
         stat="$(fancy_stats ${stat})"
-        read -r modified added deleted untracked <<< "${stat}"
+        read -r m a d u <<< "${stat}"
 
-        load="$(_ modified)${modified} $(_ added)${added} $(_ deleted)${deleted} $(_ untracked)${untracked}$(_)"
+        load="$(_ modified)${m} $(_ added)${a} $(_ deleted)${d} $(_ untracked)${u}$(_)"
     fi
 
     local userhost
