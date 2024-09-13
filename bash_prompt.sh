@@ -5,7 +5,7 @@ if [[ "${BASH##*/}" != "bash" ]]; then
     return
 fi
 
-__create_prompt() (
+__create_prompt() {
     # shellcheck disable=SC2034
     local exit_status=$?
 
@@ -414,7 +414,7 @@ __create_prompt() (
             echo "${line[0]}${line[1]}${line[2]}${line[3]}"
             ;;
     esac
-)
+}
 
 prompt() {
     __prompt_mode="$1"
