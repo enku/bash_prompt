@@ -8,6 +8,7 @@ fi
 __create_prompt() {
     # shellcheck disable=SC2034
     local exit_status=$?
+    unset PS1
 
     shopt -s extglob
     HISTTIMEFORMAT='%s '
@@ -358,7 +359,6 @@ __create_prompt() {
         printf 'myos="%s"\nload="%s"\nmyversion="%s"\ntty="%s"\nusers="%s"\nvcs="%s"\n' "${myos}" "${load}" "${myversion}" "${tty}" "${users}" "${vcs}"
     }
 
-    PS1='\$ '
     if [[ -e ~/.bash_prompt ]]; then
         # shellcheck source=/dev/null
         source ~/.bash_prompt
@@ -396,11 +396,12 @@ __create_prompt() {
     local userhost
     userhost="<${LOGNAME}@${HOSTNAME%.*}>"
     local line
+    PS1="${PS1:-\s-\v\$ }"
     line=(
         [0]="$(_ fg "" under)$(three_cent)$(off)\n"
         [1]="$(_)$(three_cent " $myos $myversion" "$users" "$load ")$(off)\n"
         [2]="$(_ fg bg under)$(three_cent " $today" "$userhost" "$tty ")$(off)\n"
-        [3]="$(off)$(_ parens)${parens0}$(off)$PS1\w$(_ parens)${parens1}$(off)  "
+        "${PS1}"
     )
 
     case "${__prompt_mode}" in
