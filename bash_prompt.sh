@@ -359,9 +359,9 @@ __create_prompt() {
     }
 
     PS1='\$ '
-    if [[ -e ~/.location ]]; then
+    if [[ -e ~/.bash_prompt ]]; then
         # shellcheck source=/dev/null
-        source ~/.location
+        source ~/.bash_prompt
     fi
 
     local myos today myversion users tty load vcs
