@@ -121,7 +121,7 @@ __create_prompt() {
             esac
         done < <(git status --porcelain 2>/dev/null)
 
-        stat="${modified}m ${added}a ${deleted}d ${untracked}u"
+        stat="${modified}m ${added}a ${deleted}d ${untracked}?"
         echo "git ${root} ${branch} ${revision} ${stat}"
     }
 
