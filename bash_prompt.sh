@@ -113,7 +113,7 @@ __create_prompt() {
                     (( deleted++ ))
                     (( added++ ))
                     ;;
-                A)
+                A|AM)
                     (( added++ ))
                     ;;
                 *)
