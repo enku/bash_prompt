@@ -2,4 +2,4 @@
 
 My bash prompt.
 
-![Screenshot](assets/screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/enku/screenshots/refs/heads/master/bash_prompt/screenshot.png)
