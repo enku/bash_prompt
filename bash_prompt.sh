@@ -39,6 +39,8 @@ __create_prompt() {
 
     # Set some constants
     local -r ESC='\[\033['
+
+    # shellcheck disable=SC2034
     local -r RESET=${ESC}"0m\]" \
         BOLD=${ESC}"1m\]" \
         UNDERSCORE=${ESC}"4m\]" \
@@ -387,6 +389,7 @@ __create_prompt() {
         read -r vcs repo brnch revision stat <<< "$vcs"
         users="$(_ parens)${parens0}$(_ vcs "" bold)${vcs}$(off)$(_)∙$(_ repo)${repo}$(_)∙$(_ branch)${brnch}$(_)∙$(_ vcs)${ITALIC}${revision:0:7}$(off)$(_)$(_ parens)${parens1}$(_)"
         local m a d u
+        # shellcheck disable=SC2086
         stat="$(fancy_stats ${stat})"
         read -r m a d u <<< "${stat}"
 
